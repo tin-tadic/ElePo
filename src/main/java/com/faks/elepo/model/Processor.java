@@ -1,4 +1,4 @@
-package com.faks.elepo.database.model;
+package com.faks.elepo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

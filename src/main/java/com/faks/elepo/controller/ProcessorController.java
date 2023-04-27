@@ -1,20 +1,21 @@
 package com.faks.elepo.controller;
 
-import com.faks.elepo.database.model.Processor;
+import com.faks.elepo.model.Processor;
 import com.faks.elepo.database.repository.ProcessorRepository;
 import com.faks.elepo.dto.AddProcessorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/processor")
+@PreAuthorize("hasRole('ADMIN')")
 public class ProcessorController {
     @Autowired
     ProcessorRepository processorRepository;
@@ -34,6 +35,8 @@ public class ProcessorController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addProcessor(@Validated @RequestBody AddProcessorDTO addProcessorDTO) {
+        //TODO: add check for uniuque name
+
         processorRepository.save(new Processor(
             addProcessorDTO.getName(),
             addProcessorDTO.getManufacturerName(),

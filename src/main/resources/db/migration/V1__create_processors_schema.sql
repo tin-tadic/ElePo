@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `processors` (
     `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` varchar(100) NOT NULL,
+    `name` varchar(100) NOT NULL UNIQUE,
     `manufacturer_name` varchar(100) DEFAULT NULL,
     `socket` varchar(100) DEFAULT NULL,
     `release_date` int(11) DEFAULT NULL,
