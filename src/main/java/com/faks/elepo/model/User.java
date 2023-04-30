@@ -17,14 +17,14 @@ public class User {
     private Long id;
     private String email;
     private String password;
-    private String name;
+    private String username;
     private String role;
     private Integer isDisabled;
 
-    public User(String email, String password, String name, String role) {
+    public User(String email, String password, String username, String role) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.username = username;
         this.role = role;
         this.isDisabled = 0;
     }

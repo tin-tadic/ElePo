@@ -1,4 +1,4 @@
-package com.faks.elepo.dto;
+package com.faks.elepo.model.dto;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;

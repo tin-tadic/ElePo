@@ -1,4 +1,4 @@
-package com.faks.elepo.dto;
+package com.faks.elepo.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,9 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDTO {
+public class RegisterUserDTO {
+    @NotBlank(message = "Name must not be empty!")
+    private String username;
     @Email(message = "This is not a valid email!")
     private String email;
     @NotBlank(message = "Password must not be empty!")

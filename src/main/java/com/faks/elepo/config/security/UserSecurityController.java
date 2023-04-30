@@ -1,18 +1,17 @@
 package com.faks.elepo.config.security;
 
 import com.faks.elepo.database.repository.UserRepository;
-import com.faks.elepo.dto.LoginRequestDTO;
+import com.faks.elepo.model.dto.LoginRequestDTO;
+import com.faks.elepo.model.dto.RegisterUserDTO;
 import com.faks.elepo.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,11 +40,22 @@ public class UserSecurityController {
         this.contextReader = contextReader;
     }
 
-    @GetMapping("/whoAmI")
-    public ResponseEntity<User> testGetLoggedInUser() {
-        User loggedInUser = contextReader.getLoggedInUser();
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterUserDTO registerUserDTO) {
+        Optional<User> optionalUser = userRepository.findByEmailOrUsername(registerUserDTO.getEmail(), registerUserDTO.getUsername());
 
-        return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+        if (optionalUser.isPresent()) {
+            return new ResponseEntity<>("User already exists!", HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.save(new User(
+                registerUserDTO.getEmail(),
+                bCryptPasswordEncoder.encode(registerUserDTO.getPassword()),
+                registerUserDTO.getUsername(),
+           "ROLE_USER"
+        ));
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")
@@ -90,10 +100,5 @@ public class UserSecurityController {
                         secretKey.getBytes()
                 )
                 .compact();
-    }
-
-    @Bean(name = "passwordEncoder")
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(8);
     }
 }

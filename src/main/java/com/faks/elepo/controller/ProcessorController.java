@@ -2,7 +2,7 @@ package com.faks.elepo.controller;
 
 import com.faks.elepo.model.Processor;
 import com.faks.elepo.database.repository.ProcessorRepository;
-import com.faks.elepo.dto.AddProcessorDTO;
+import com.faks.elepo.model.dto.AddProcessorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,11 @@ public class ProcessorController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addProcessor(@Validated @RequestBody AddProcessorDTO addProcessorDTO) {
-        //TODO: add check for uniuque name
+        Optional<Processor> optionalProcessor = processorRepository.findByName(addProcessorDTO.getName());
+
+        if (optionalProcessor.isPresent()) {
+            return new ResponseEntity<>("Processor with that name already exists!", HttpStatus.BAD_REQUEST);
+        }
 
         processorRepository.save(new Processor(
             addProcessorDTO.getName(),
