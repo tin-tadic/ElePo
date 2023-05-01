@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/processor")
-@PreAuthorize("hasRole('ADMIN')")
 public class ProcessorController {
     @Autowired
     ProcessorRepository processorRepository;

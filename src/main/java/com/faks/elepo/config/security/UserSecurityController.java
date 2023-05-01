@@ -70,8 +70,12 @@ public class UserSecurityController {
         if (!bCryptPasswordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
             return new ResponseEntity<>("Invalid password!", HttpStatus.FORBIDDEN);
         }
-        String role = userRepository.findByEmail(loginRequestDTO.getEmail()).get().getRole();
 
+        if (user.getIsDisabled() == 1) {
+            return new ResponseEntity<>("User account has been disabled!", HttpStatus.FORBIDDEN);
+        }
+
+        String role = userRepository.findByEmail(loginRequestDTO.getEmail()).get().getRole();
         String token = getJWTToken(loginRequestDTO.getEmail(), role);
         response.setHeader("access-token", token);
 
@@ -80,8 +84,7 @@ public class UserSecurityController {
 
 
     private String getJWTToken(String email, String role) {
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                .commaSeparatedStringToAuthorityList("ROLE_" + role);
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(role);
 
         return Jwts
                 .builder()
