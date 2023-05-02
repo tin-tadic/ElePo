@@ -82,7 +82,13 @@ public class CommentController {
         Optional<Comment> optionalComment = commentRepository.findById(id);
 
         if (optionalComment.isPresent()) {
-            commentRepository.delete(optionalComment.get());
+            Comment comment = optionalComment.get();
+
+            if (!contextReader.getLoggedInUser().getId().equals(comment.getUser().getId()) && !contextReader.getLoggedInUser().getRole().equals("ROLE_ADMIN")) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            commentRepository.delete(comment);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -30,11 +30,13 @@ public class HttpSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api-docs").permitAll()
+                .antMatchers(HttpMethod.GET, "/swagger/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/register", "/login").permitAll()
                 .antMatchers("/processor/**").hasRole("ADMIN")
                 .antMatchers("/user/update/**").hasRole("USER")
                 .antMatchers("/user/**").hasRole("ADMIN")
+                .antMatchers("/comment/update/**", "/comment/delete/**").hasRole("USER")
+                .antMatchers("/comment/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterAfter(new JWTAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
     }
