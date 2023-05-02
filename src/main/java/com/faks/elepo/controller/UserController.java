@@ -1,6 +1,7 @@
 package com.faks.elepo.controller;
 
 import com.faks.elepo.config.security.ContextReader;
+import com.faks.elepo.database.repository.CommentRepository;
 import com.faks.elepo.database.repository.UserRepository;
 import com.faks.elepo.model.User;
 import com.faks.elepo.model.dto.SetUserRoleDTO;
@@ -18,12 +19,14 @@ import java.util.Optional;
 public class UserController {
     private UserRepository userRepository;
     private ContextReader contextReader;
+    private CommentRepository commentRepository;
 
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(8);
 
-    public UserController(UserRepository userRepository, ContextReader contextReader) {
+    public UserController(UserRepository userRepository, ContextReader contextReader, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.contextReader = contextReader;
+        this.commentRepository = commentRepository;
     }
 
     @PatchMapping("/update/{id}")
@@ -35,7 +38,7 @@ public class UserController {
         }
         User user = optionalUser.get();
 
-        if (!contextReader.getLoggedInUser().getUsername().equals(user.getUsername()) && !contextReader.getLoggedInUser().getRole().equals("ROLE_ADMIN")) {
+        if (!contextReader.getLoggedInUser().getId().equals(user.getId()) && !contextReader.getLoggedInUser().getRole().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -65,6 +68,7 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
+            commentRepository.deleteByUserId(id);
             userRepository.delete(optionalUser.get());
         }
 
@@ -93,10 +97,10 @@ public class UserController {
         }
         User user = optionalUser.get();
 
-        if (user.getIsDisabled() == 1) {
-            user.setIsDisabled(0);
+        if (user.isDisabled()) {
+            user.setDisabled(false);
         } else {
-            user.setIsDisabled(1);
+            user.setDisabled(true);
         }
         userRepository.save(user);
 

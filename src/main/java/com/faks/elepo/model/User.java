@@ -19,13 +19,13 @@ public class User {
     private String password;
     private String username;
     private String role;
-    private Integer isDisabled;
+    private boolean isDisabled;
 
     public User(String email, String password, String username, String role) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
-        this.isDisabled = 0;
+        this.isDisabled = false;
     }
 }

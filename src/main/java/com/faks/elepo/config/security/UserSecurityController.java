@@ -71,7 +71,7 @@ public class UserSecurityController {
             return new ResponseEntity<>("Invalid password!", HttpStatus.FORBIDDEN);
         }
 
-        if (user.getIsDisabled() == 1) {
+        if (user.isDisabled()) {
             return new ResponseEntity<>("User account has been disabled!", HttpStatus.FORBIDDEN);
         }
 

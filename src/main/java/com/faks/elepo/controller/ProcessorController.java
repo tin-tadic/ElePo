@@ -1,13 +1,11 @@
 package com.faks.elepo.controller;
 
+import com.faks.elepo.database.repository.CommentRepository;
 import com.faks.elepo.model.Processor;
 import com.faks.elepo.database.repository.ProcessorRepository;
 import com.faks.elepo.model.dto.AddProcessorDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +14,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/processor")
 public class ProcessorController {
-    @Autowired
-    ProcessorRepository processorRepository;
+    private ProcessorRepository processorRepository;
+    private CommentRepository commentRepository;
+
+    public ProcessorController(ProcessorRepository processorRepository, CommentRepository commentRepository) {
+        this.processorRepository = processorRepository;
+        this.commentRepository = commentRepository;
+    }
+
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Processor> getProcessorsByName(@PathVariable Long id) {
@@ -65,6 +69,13 @@ public class ProcessorController {
         }
         Processor processor = optionalProcessor.get();
 
+        if (!processor.getName().equals(addProcessorDTO.getName())) {
+            Optional<Processor> existingProcessor = processorRepository.findByName(addProcessorDTO.getName());
+            if (existingProcessor.isPresent()) {
+                return new ResponseEntity<>("Processor with that name already exists!", HttpStatus.BAD_REQUEST);
+            }
+        }
+
         processor.setName(addProcessorDTO.getName());
         processor.setManufacturerName(addProcessorDTO.getManufacturerName());
         processor.setSocket(addProcessorDTO.getSocket());
@@ -86,6 +97,7 @@ public class ProcessorController {
         Optional<Processor> optionalProcessor = processorRepository.findById(id);
 
         if (optionalProcessor.isPresent()) {
+            commentRepository.deleteByProcessorId(id);
             processorRepository.delete(optionalProcessor.get());
         }
 
