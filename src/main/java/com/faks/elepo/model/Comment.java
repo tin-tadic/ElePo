@@ -1,5 +1,6 @@
 package com.faks.elepo.model;
 
+import com.faks.elepo.listener.CommentListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Entity
 @Table(name = "comments")
+@EntityListeners(CommentListener.class)
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

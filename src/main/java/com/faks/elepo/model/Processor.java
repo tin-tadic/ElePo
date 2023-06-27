@@ -1,5 +1,6 @@
 package com.faks.elepo.model;
 
+import com.faks.elepo.listener.ProcessorListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "processors")
+@EntityListeners(ProcessorListener.class)
 public class Processor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

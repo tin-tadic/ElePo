@@ -73,13 +73,14 @@ public class CommentController {
         }
 
         comment.setText(updateCommentDTO.getText());
+        commentRepository.save(comment);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<String> deleteCommentById(@PathVariable Long id) {
-        Optional<Comment> optionalComment = commentRepository.findById(id);
+    public ResponseEntity<String> deleteCommentById(@PathVariable Long commentId) {
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
         if (optionalComment.isPresent()) {
             Comment comment = optionalComment.get();
