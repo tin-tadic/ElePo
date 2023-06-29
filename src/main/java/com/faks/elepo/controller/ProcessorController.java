@@ -28,7 +28,6 @@ public class ProcessorController {
         return new ResponseEntity<>(processorRepository.findAll(), HttpStatus.OK);
     }
 
-
     @GetMapping("/get/{id}")
     public ResponseEntity<Processor> getProcessorsByName(@PathVariable Long id) {
         Optional<Processor> optionalProcessor = processorRepository.findById(id);
