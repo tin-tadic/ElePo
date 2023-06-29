@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +21,11 @@ public class ProcessorController {
     public ProcessorController(ProcessorRepository processorRepository, CommentRepository commentRepository) {
         this.processorRepository = processorRepository;
         this.commentRepository = commentRepository;
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Processor>> getAllProcessors() {
+        return new ResponseEntity<>(processorRepository.findAll(), HttpStatus.OK);
     }
 
 
