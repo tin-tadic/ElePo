@@ -34,7 +34,7 @@ public class CommentController {
         List<Comment> comments = new ArrayList<>();
         Optional<Processor> optionalProcessor = processorRepository.findById(processorId);
 
-        if (optionalProcessor.isEmpty()) {
+        if (optionalProcessor.isPresent()) {
             comments = commentRepository.findByProcessorId(processorId);
         }
 
