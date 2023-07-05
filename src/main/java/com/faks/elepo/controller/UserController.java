@@ -4,6 +4,7 @@ import com.faks.elepo.config.security.ContextReader;
 import com.faks.elepo.database.repository.CommentRepository;
 import com.faks.elepo.database.repository.UserRepository;
 import com.faks.elepo.model.User;
+import com.faks.elepo.model.dto.LoggedInUserInfoDTO;
 import com.faks.elepo.model.dto.SetUserRoleDTO;
 import com.faks.elepo.model.dto.UpdateUserDTO;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,21 @@ public class UserController {
         this.userRepository = userRepository;
         this.contextReader = contextReader;
         this.commentRepository = commentRepository;
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<LoggedInUserInfoDTO> getLoggedInUserInfo() {
+        User user = contextReader.getLoggedInUser();
+
+        return new ResponseEntity<>(
+                new LoggedInUserInfoDTO(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getUsername(),
+                        user.getRole()
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PatchMapping("/update/{id}")
