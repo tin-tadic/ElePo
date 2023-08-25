@@ -1,0 +1,39 @@
+version: "3.4"
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: elektronickoposlovanje
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8000:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+    depends_on:
+      - mariadb
+
+  elepo_backend:
+    container_name: elepo_backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8081:8081"
+      - "9000:9000"
+    depends_on:
+      - mariadb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
